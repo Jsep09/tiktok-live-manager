@@ -1,36 +1,32 @@
 @echo off
 chcp 65001 >nul
-title TikTok Live Manager — กำลังปิดโปรแกรม...
+title TikTok Live Manager - Stopping...
 color 0C
 
 echo.
-echo ╔══════════════════════════════════════════════════╗
-echo ║        TikTok Live Viewer Manager               ║
-echo ║        กำลังปิดโปรแกรม...                      ║
-echo ╚══════════════════════════════════════════════════╝
+echo =====================================================
+echo        TikTok Live Viewer Manager
+echo        Stopping...
+echo =====================================================
 echo.
 
-echo กำลังหยุด Backend (uvicorn)...
-taskkill /F /FI "WINDOWTITLE eq TikTok Live Manager — Backend*" >nul 2>&1
+echo Stopping Backend (uvicorn)...
 taskkill /F /IM uvicorn.exe >nul 2>&1
 
-echo กำลังหยุด Frontend (next dev)...
-taskkill /F /FI "WINDOWTITLE eq TikTok Live Manager — Frontend*" >nul 2>&1
-
-:: kill node processes ที่รัน next dev อยู่
-for /f "tokens=2" %%p in ('tasklist /fi "IMAGENAME eq node.exe" /fo csv /nh 2^>nul') do (
-    wmic process where "ProcessId=%%~p" get CommandLine 2>nul | findstr /i "next" >nul 2>&1
-    if not errorlevel 1 (
-        taskkill /F /PID %%~p >nul 2>&1
-    )
+echo Stopping Frontend (node/next)...
+for /f "tokens=1 delims=," %%p in ('tasklist /fi "IMAGENAME eq node.exe" /fo csv /nh 2^>nul') do (
+    taskkill /F /FI "IMAGENAME eq node.exe" >nul 2>&1
+    goto node_done
 )
+:node_done
+
+echo Closing terminal windows...
+taskkill /F /FI "WINDOWTITLE eq TikTok Live Manager*" >nul 2>&1
 
 echo.
-echo ╔══════════════════════════════════════════════════╗
-echo ║  ✅  ปิดโปรแกรมเรียบร้อยแล้ว                   ║
-echo ║                                                  ║
-echo ║  ขอบคุณที่ใช้งาน TikTok Live Manager            ║
-echo ╚══════════════════════════════════════════════════╝
+echo =====================================================
+echo  Done! TikTok Live Manager has been stopped.
+echo =====================================================
 echo.
-timeout /t 3 /nobreak >nul
+timeout /t 2 /nobreak >nul
 exit /b 0
