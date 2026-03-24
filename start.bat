@@ -75,22 +75,25 @@ echo.
 
 :: ─── ติดตั้ง Frontend (ครั้งแรกเท่านั้น) ─────────────────
 echo [4/5] เตรียม Frontend (Node.js)...
-if not exist "frontend\node_modules" (
-    echo     กำลังติดตั้ง Node.js packages ครั้งแรก...
-    echo     (ใช้เวลาสักครู่ กรุณารอ)
-    cd frontend
-    npm install --silent
-    if errorlevel 1 (
-        echo ❌  ติดตั้ง Node.js packages ไม่สำเร็จ
-        cd ..
-        pause
-        exit /b 1
-    )
-    cd ..
-    echo     ✅  ติดตั้ง Frontend เรียบร้อย
-) else (
-    echo     ✅  Frontend พร้อมแล้ว
+if exist "frontend\node_modules" goto frontend_ready
+echo     กำลังติดตั้ง Node.js packages ครั้งแรก...
+echo     (ใช้เวลาสักครู่ กรุณารอ)
+cd frontend
+npm install
+set NPM_ERR=%errorlevel%
+cd ..
+if %NPM_ERR% neq 0 (
+    echo.
+    echo ❌  ติดตั้ง Node.js packages ไม่สำเร็จ (exit code: %NPM_ERR%)
+    echo     ลองรัน: cd frontend ^&^& npm install
+    pause
+    exit /b 1
 )
+echo     ✅  ติดตั้ง Frontend เรียบร้อย
+goto frontend_done
+:frontend_ready
+echo     ✅  Frontend พร้อมแล้ว
+:frontend_done
 echo.
 
 :: ─── เปิด Backend ─────────────────────────────────────────
