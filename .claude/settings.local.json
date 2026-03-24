@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(del \"c:\\\\Users\\\\User\\\\Documents\\\\tiktok-live-manager\\\\frontend\\\\package-lock.json\")"
+    ]
+  }
+}
