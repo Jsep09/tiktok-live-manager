@@ -1,5 +1,7 @@
 @echo off
 chcp 65001 >nul
+echo DEBUG: bat file is running...
+pause
 title TikTok Live Manager — กำลังเริ่มต้น...
 color 0A
 
