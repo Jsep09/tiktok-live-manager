@@ -53,11 +53,16 @@ export function useTTS() {
 
       // Detect Thai characters (U+0E00–U+0E7F)
       const isThai = /[\u0E00-\u0E7F]/.test(processed);
-      const voice = isThai ? thVoice : enVoice;
 
       const utterance = new SpeechSynthesisUtterance(processed);
-      utterance.lang = voice?.lang ?? (isThai ? "th-TH" : "en-US");
-      if (voice) utterance.voice = voice;
+      if (isThai) {
+        utterance.lang = "th-TH";
+        if (thVoice && thVoice.lang.startsWith("th")) utterance.voice = thVoice;
+        // else: let the browser pick the best available Thai voice
+      } else {
+        utterance.lang = enVoice?.lang ?? "en-US";
+        if (enVoice) utterance.voice = enVoice;
+      }
       utterance.rate = 0.9;
       utterance.pitch = 1.0;
 
